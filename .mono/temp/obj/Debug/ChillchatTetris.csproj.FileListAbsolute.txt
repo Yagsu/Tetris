@@ -1,0 +1,8 @@
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\bin\Debug\ChillchatTetris.dll
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\bin\Debug\ChillchatTetris.pdb
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\obj\Debug\ChillchatTetris.csproj.AssemblyReference.cache
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\obj\Debug\ChillchatTetris.AssemblyInfoInputs.cache
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\obj\Debug\ChillchatTetris.AssemblyInfo.cs
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\obj\Debug\ChillchatTetris.csproj.CoreCompileInputs.cache
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\obj\Debug\ChillchatTetris.dll
+C:\Users\Admin-Jesse\Documents\GodotStuff\Tetris\.mono\temp\obj\Debug\ChillchatTetris.pdb
