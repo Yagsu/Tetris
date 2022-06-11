@@ -6,7 +6,7 @@ const GRID_MATRIXSIZE:	int = GRID_WIDTH * GRID_HEIGHT
 const GRID_CELLSIZE:	 Vector2 = Vector2(48, 48)
 const GRID_HALFCELLSIZE: Vector2 = GRID_CELLSIZE * 0.5
 
-var GridMatrix = []
+var GridMatrix
 var GridPositionOffset: Vector2
 var Initialized: bool = false
 
@@ -15,24 +15,24 @@ func _ready():
 	Grid_Initialize()
 
 
+
 func Grid_Initialize() -> void:
 	if Initialized:
 		return
-	
-	for x in range(GRID_WIDTH * GRID_HEIGHT):
-		GridMatrix.append(0)
+
+	GridMatrix = Matrix.CreateMatrix(GRID_WIDTH, GRID_HEIGHT)
 
 	Initialized = true
 
 func Grid_Reset() -> void:
 	if not Initialized:
 		return
-	
-	for x in range(GRID_WIDTH):
-		for y in range(GRID_HEIGHT):
-			GridMatrix[x][y] = 0
 
-	
+	for i in range(GRID_WIDTH * GRID_HEIGHT):
+			GridMatrix[i] = 0
+
+
+
 func Grid_IsInitialized() -> bool:
 	return Initialized
 
@@ -44,7 +44,7 @@ func Grid_IsFloor(Pos: Vector2) -> bool:
 
 func Grid_IsInsideGrid(Pos: Vector2) -> bool:
 	return Pos.x >= 0 and Pos.x < GRID_WIDTH and Pos.y >= 0 and Pos.y < GRID_HEIGHT
-	
+
 func Grid_IsEmptyPosition(Pos: Vector2) -> bool:
 	if not Initialized:
 		return false
@@ -55,23 +55,24 @@ func Grid_IsEmptyPosition(Pos: Vector2) -> bool:
 	return false
 
 
+
 func Grid_GetValueAt(Pos: Vector2) -> int:
 	if not Grid_IsInsideGrid(Pos):
 		return -1
-	
-	return GridMatrix[Pos.y * GRID_WIDTH + Pos.x]
-	
+
+	return GridMatrix[Pos.x][Pos.y]
+
 func Grid_SetValueAt(Pos: Vector2, Value: int) -> void:
 	if not Grid_IsInsideGrid(Pos):
 		return
-	
-	GridMatrix[Pos.y * GRID_WIDTH + Pos.x] = Value
+
+	GridMatrix[Pos.x][Pos.y] = Value
 
 
 # DEBUG
 
 
-func Grid_GetDistanceToClosestWall(Pos):
+func Grid_GetDistanceToClosestWall(Pos) -> float:
 	var PosHeight = Pos.y
 	var LeftWall = Vector2(-1, PosHeight)
 	var RightWall = Vector2(10, PosHeight)
@@ -81,12 +82,7 @@ func Grid_GetDistanceToClosestWall(Pos):
 
 	return min(DistToLeft, DistToRight)
 
-func Grid_GetDistanceToFloor(Pos):
+func Grid_GetDistanceToFloor(Pos) -> float:
 	var FloorPos = Vector2(Pos.x, 23)
 
 	return Pos.distance_to(FloorPos)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	update()

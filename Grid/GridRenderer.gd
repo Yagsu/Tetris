@@ -1,6 +1,5 @@
 extends Node2D
 
-
 const DrawColors = [Color(0, 0, 0), Color(1, 0, 0)]
 
 func _ready():
@@ -16,7 +15,6 @@ func GridRenderer_Draw() -> void:
 	for x in range(Grid.GRID_WIDTH):
 		for y in range(Grid.GRID_HEIGHT):
 			var GridPos = Vector2(x, y)
-
 			
 			var Pos = GridRenderer_ToScreen(GridPos)
 			var Col = Color(0, 0, 0)
@@ -31,9 +29,10 @@ func GridRenderer_Draw() -> void:
 
 			draw_rect(GridRect, Col)
 
+
 func GridRenderer_ToScreen(Pos: Vector2) -> Vector2:
 	return Pos * Grid.GRID_CELLSIZE
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	update()
