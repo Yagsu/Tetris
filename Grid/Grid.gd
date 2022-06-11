@@ -1,44 +1,71 @@
 extends Node2D
 
-var Width = 10
-var Height = 23
-var CellSize = Vector2(48, 48)
-var HalfCellSize = CellSize * 0.5
-var Grid = []
+const GRID_WIDTH: 		int	= 10
+const GRID_HEIGHT:		int	= 23
+const GRID_MATRIXSIZE:	int = GRID_WIDTH * GRID_HEIGHT
+const GRID_CELLSIZE:	 Vector2 = Vector2(48, 48)
+const GRID_HALFCELLSIZE: Vector2 = GRID_CELLSIZE * 0.5
 
-# Called when the node enters the scene tree for the first time.
+var GridMatrix = []
+var GridPositionOffset: Vector2
+var Initialized: bool = false
+
+
 func _ready():
-	for x in range(Width):
-		Grid.append([])
-		for y in range(Height):
-			Grid[x].append(0)
+	Grid_Initialize()
 
-func _draw():
-	Grid_Draw()
 
-func Grid_Draw():
-	for x in range(Width):
-		for y in range(Height):
-			var GridPos = Vector2(x, y)
-			var Pos = Grid_ToScreen(GridPos)
-			var Col = Color(0.1 * x, 0.05 * y, 0, lerp(0, 1, min(Grid_GetDistanceToFloor(GridPos), Grid_GetDistanceToClosestWall(GridPos)) / 4))
-			var GridRect = Rect2(Pos, CellSize)
+func Grid_Initialize() -> void:
+	if Initialized:
+		return
+	
+	for x in range(GRID_WIDTH * GRID_HEIGHT):
+		GridMatrix.append(0)
 
-			draw_rect(GridRect, Col)
+	Initialized = true
 
-func Grid_ToScreen(Pos):
-	return position + Pos * CellSize
+func Grid_Reset() -> void:
+	if not Initialized:
+		return
+	
+	for x in range(GRID_WIDTH):
+		for y in range(GRID_HEIGHT):
+			GridMatrix[x][y] = 0
 
-func Grid_IsWall(Pos):
-	return Pos.x == -1 or Pos.x == 10
+	
+func Grid_IsInitialized() -> bool:
+	return Initialized
 
-func Grid_IsFloor(Pos):
-	return Pos.y == 23
+func Grid_IsWall(Pos: Vector2) -> bool:
+	return Pos.x <= -1 or Pos.x >= GRID_WIDTH
 
-func Grid_IsEmptyPosition(Pos):
-	if Pos.x > 0 and Pos.x < Width and Pos.y > 0 and Pos.y < Height:
-		return Grid[Pos.x][Pos.y] == 0
+func Grid_IsFloor(Pos: Vector2) -> bool:
+	return Pos.y >= GRID_HEIGHT
 
+func Grid_IsInsideGrid(Pos: Vector2) -> bool:
+	return Pos.x >= 0 and Pos.x < GRID_WIDTH and Pos.y >= 0 and Pos.y < GRID_HEIGHT
+	
+func Grid_IsEmptyPosition(Pos: Vector2) -> bool:
+	if not Initialized:
+		return false
+
+	if Pos.x > 0 and Pos.x < GRID_WIDTH and Pos.y > 0 and Pos.y < GRID_HEIGHT:
+		return GridMatrix[Pos.x][Pos.y] == 0
+
+	return false
+
+
+func Grid_GetValueAt(Pos: Vector2) -> int:
+	if not Grid_IsInsideGrid(Pos):
+		return -1
+	
+	return GridMatrix[Pos.y * GRID_WIDTH + Pos.x]
+	
+func Grid_SetValueAt(Pos: Vector2, Value: int) -> void:
+	if not Grid_IsInsideGrid(Pos):
+		return
+	
+	GridMatrix[Pos.y * GRID_WIDTH + Pos.x] = Value
 
 
 # DEBUG
