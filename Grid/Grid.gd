@@ -1,14 +1,14 @@
 extends Node2D
 
-const GRID_WIDTH: 		int	= 10
-const GRID_HEIGHT:		int	= 23
-const GRID_MATRIXSIZE:	int = GRID_WIDTH * GRID_HEIGHT
+const GRID_WIDTH: 		 int = 10
+const GRID_HEIGHT:		 int = 23
+const GRID_MATRIXSIZE:	 int = GRID_WIDTH * GRID_HEIGHT
 const GRID_CELLSIZE:	 Vector2 = Vector2(48, 48)
 const GRID_HALFCELLSIZE: Vector2 = GRID_CELLSIZE * 0.5
 
-var GridMatrix
+var GridMatrix:			Array
 var GridPositionOffset: Vector2
-var Initialized: bool = false
+var Initialized: 		bool = false
 
 
 func _ready():

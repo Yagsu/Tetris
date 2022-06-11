@@ -2,7 +2,7 @@ extends Node
 
 const TempMatrixWidth:  int	= 4
 const TempMatrixHeight: int	= 4
-var Temp4x4Matrix: Array	= [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
+var Temp4x4Matrix:	Array	= [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
 
 
 func CreateMatrix(Width: int, Height: int, Value: int = 0) -> Array:
