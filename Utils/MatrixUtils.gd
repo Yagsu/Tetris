@@ -37,9 +37,9 @@ func CopyMatrix(Dest: Array, Source: Array) -> void:
 			Dest[x][y] = Source[x][y]
 
 
-func TransposeMatrix(Matrix: Array) -> Array:
-	var Width:	int = Matrix.size()
-	var Height: int = Matrix[0].size()
+func TransposeMatrix(Matrix: Array, Width: int, Height: int) -> Array:
+	Width	= min(Matrix.size(), Width)
+	Height	= min(Matrix[0].size(), Height)
 	
 	if Width <= TempMatrixWidth and Height <= TempMatrixHeight:
 		return _TransposeCopy(Matrix, Width, Height)
@@ -64,9 +64,9 @@ func _TransposeNew(Matrix: Array, Width: int, Height: int) -> Array:
 	return NewMatrix
 
 
-func ReverseRows(Matrix: Array) -> Array:
-	var Width:	int = Matrix.size()
-	var Height: int = Matrix[0].size()
+func ReverseRows(Matrix: Array, Width: int, Height: int) -> Array:
+	Width	= min(Matrix.size(), Width)
+	Height	= min(Matrix[0].size(), Height)
 	
 	if Width <= TempMatrixWidth and Height <= TempMatrixHeight:
 		return _ReverseRowsCopy(Matrix, Width, Height)
@@ -91,9 +91,9 @@ func _ReverseRowsNew(Matrix: Array, Width: int, Height: int) -> Array:
 	return NewMatrix
 
 
-func ReverseCols(Matrix: Array) -> Array:
-	var Width:	int = Matrix.size()
-	var Height: int = Matrix[0].size()
+func ReverseCols(Matrix: Array, Width: int, Height: int) -> Array:
+	Width	= min(Matrix.size(), Width)
+	Height	= min(Matrix[0].size(), Height)
 
 	if Width <= TempMatrixWidth and Height <= TempMatrixHeight:
 		return _ReverseColsCopy(Matrix, Width, Height)

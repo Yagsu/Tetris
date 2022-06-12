@@ -9,7 +9,7 @@ const GRID_HALFCELLSIZE	 := GRID_CELLSIZE * 0.5
 var GridMatrix:			Array
 var Initialized: 		bool = false
 
-signal OnPieceAdded
+signal ShouldLockPiece
 
 
 func _ready():
@@ -46,6 +46,9 @@ func Grid_IsFloor(Pos: Vector2) -> bool:
 func Grid_IsInsideGrid(Pos: Vector2) -> bool:
 	return Pos.x >= 0 and Pos.x < GRID_WIDTH and Pos.y >= 0 and Pos.y < GRID_HEIGHT
 
+func Grid_IsInsidePlayArea(Pos: Vector2) -> bool:
+	return Pos.y >=2 and Pos.y < GRID_HEIGHT
+
 func Grid_IsEmptyPosition(Pos: Vector2) -> bool:
 	if not Initialized:
 		return false
@@ -70,6 +73,19 @@ func Grid_SetValueAt(Pos: Vector2, Value: int) -> void:
 	GridMatrix[Pos.x][Pos.y] = Value
 
 
+
+func Grid_AddShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array) -> void:
+	var Width:  int	= min(ShapeWidth, Shape.size())
+	var Height: int = min(ShapeHeight, Shape[0].size())
+
+	if Width > 0 and Height > 0:
+		for x in range(Width):
+			for y in range(Height):
+				var ShapeValue: int = Shape[x][y]
+
+				if ShapeValue != 0:
+					Grid_SetValueAt(Pos + Vector2(x, y), ShapeValue)
+
 func Grid_HasCollisionWithShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array, LockPiece: bool = false) -> bool:
 	var Width:  int	= min(ShapeWidth, Shape.size())
 	var Height: int = min(ShapeHeight, Shape[0].size())
@@ -83,30 +99,10 @@ func Grid_HasCollisionWithShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int,
 					if Grid_IsWall(GridPos):
 						return true
 						
-					if Grid_IsFloor(GridPos) or GridMatrix[x][y] != 0:
+					if Grid_IsFloor(GridPos) or GridMatrix[GridPos.x][GridPos.y] != 0:
 						if LockPiece:
-							#Add piece to grid and emit signal for updating active piece
-							pass
+							emit_signal("ShouldLockPiece")
 						return true
 
 
 	return false
-
-
-# DEBUG
-
-
-func Grid_GetDistanceToClosestWall(Pos) -> float:
-	var PosHeight = Pos.y
-	var LeftWall = Vector2(-1, PosHeight)
-	var RightWall = Vector2(10, PosHeight)
-
-	var DistToRight = Pos.distance_to(RightWall)
-	var DistToLeft = Pos.distance_to(LeftWall)
-
-	return min(DistToLeft, DistToRight)
-
-func Grid_GetDistanceToFloor(Pos) -> float:
-	var FloorPos = Vector2(Pos.x, 23)
-
-	return Pos.distance_to(FloorPos)
