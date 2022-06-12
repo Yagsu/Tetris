@@ -94,17 +94,17 @@ func _ReverseRowsNew(Matrix: Array, Width: int, Height: int) -> Array:
 func ReverseCols(Matrix: Array) -> Array:
 	var Width:	int = Matrix.size()
 	var Height: int = Matrix[0].size()
-	
+
 	if Width <= TempMatrixWidth and Height <= TempMatrixHeight:
 		return _ReverseColsCopy(Matrix, Width, Height)
-		
+
 	return _ReverseColsNew(Matrix, Width, Height)
 
 func _ReverseColsCopy(Matrix: Array, Width: int, Height: int) -> Array:
 	for x in range(Width):
 		for y in range(Height):
 			Temp4x4Matrix[x][y] = Matrix[x][Height - 1 - y]
-	
+
 	CopyMatrix(Matrix, Temp4x4Matrix)
 	return Matrix
 

@@ -4,7 +4,7 @@ var ShapeMatrixWidth:	int
 var ShapeMatrixHeight:	int
 var ShapeMatrix:		Array
 var PieceColor:			Color
-var PieceType:			int = -1
+var PieceType			:= -1
 
 
 func GetShapeMatrix() -> Array:

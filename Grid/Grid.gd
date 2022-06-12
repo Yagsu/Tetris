@@ -3,12 +3,13 @@ extends Node2D
 const GRID_WIDTH: 		 int = 10
 const GRID_HEIGHT:		 int = 23
 const GRID_MATRIXSIZE:	 int = GRID_WIDTH * GRID_HEIGHT
-const GRID_CELLSIZE:	 Vector2 = Vector2(48, 48)
-const GRID_HALFCELLSIZE: Vector2 = GRID_CELLSIZE * 0.5
+const GRID_CELLSIZE		 := Vector2(48, 48)
+const GRID_HALFCELLSIZE	 := GRID_CELLSIZE * 0.5
 
 var GridMatrix:			Array
-var GridPositionOffset: Vector2
 var Initialized: 		bool = false
+
+signal OnPieceAdded
 
 
 func _ready():
@@ -49,7 +50,7 @@ func Grid_IsEmptyPosition(Pos: Vector2) -> bool:
 	if not Initialized:
 		return false
 
-	if Pos.x > 0 and Pos.x < GRID_WIDTH and Pos.y > 0 and Pos.y < GRID_HEIGHT:
+	if Grid_IsInsideGrid(Pos):
 		return GridMatrix[Pos.x][Pos.y] == 0
 
 	return false
@@ -67,6 +68,29 @@ func Grid_SetValueAt(Pos: Vector2, Value: int) -> void:
 		return
 
 	GridMatrix[Pos.x][Pos.y] = Value
+
+
+func Grid_HasCollisionWithShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array, LockPiece: bool = false) -> bool:
+	var Width:  int	= min(ShapeWidth, Shape.size())
+	var Height: int = min(ShapeHeight, Shape[0].size())
+
+	if Width > 0 and Height > 0:
+		for x in range(Width):
+			for y in range(Height):
+				if Shape[x][y] != 0:
+					var GridPos: Vector2 = Vector2(Pos.x + x, Pos.y + y)
+
+					if Grid_IsWall(GridPos):
+						return true
+						
+					if Grid_IsFloor(GridPos) or GridMatrix[x][y] != 0:
+						if LockPiece:
+							#Add piece to grid and emit signal for updating active piece
+							pass
+						return true
+
+
+	return false
 
 
 # DEBUG
