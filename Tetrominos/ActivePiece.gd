@@ -7,6 +7,7 @@ var ActivePieceData = {
 	ShapeMatrixWidth	= 4,
 	ShapeMatrixHeight	= 4,
 	ShapeMatrix			= [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+	CollisionMatrix		= [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
 }
 
 func _ready():
@@ -76,29 +77,29 @@ func ActivePiece_MoveRight()	-> void:
 	update()	
 
 func ActivePiece_RotateCW()		-> void:
-	Matrix.TransposeMatrix(ActivePieceData.ShapeMatrix)
-	Matrix.ReverseRows(ActivePieceData.ShapeMatrix)
+	Matrix.CopyMatrix(ActivePieceData.CollisionMatrix, ActivePieceData.ShapeMatrix)
+	Matrix.TransposeMatrix(ActivePieceData.CollisionMatrix)
+	Matrix.ReverseRows(ActivePieceData.CollisionMatrix)
 
-
-	ActivePieceData.RotationState += 1
-
-	if ActivePieceData.RotationState == 4:
-		ActivePieceData.RotationState = 0
-
-	update()
+	if not Grid.Grid_HasCollisionWithShape(ActivePieceData.Pos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.CollisionMatrix):
+		Matrix.CopyMatrix(ActivePieceData.ShapeMatrix, ActivePieceData.CollisionMatrix)		
+		ActivePieceData.RotationState += 1
+	
+		if ActivePieceData.RotationState == 4:
+			ActivePieceData.RotationState = 0
+			
+		update()
 
 func ActivePiece_RotateCCW()	-> void:
-	Matrix.TransposeMatrix(ActivePieceData.ShapeMatrix)
-	Matrix.ReverseCols(ActivePieceData.ShapeMatrix)
+	Matrix.CopyMatrix(ActivePieceData.CollisionMatrix, ActivePieceData.ShapeMatrix)
+	Matrix.TransposeMatrix(ActivePieceData.CollisionMatrix)
+	Matrix.ReverseCols(ActivePieceData.CollisionMatrix)
 
-
-	#Check Collisions
-
-
-	ActivePieceData.RotationState -= 1
-
-	if ActivePieceData.RotationState == -1:
-		ActivePieceData.RotationState = 3
-
-	update()
+	if not Grid.Grid_HasCollisionWithShape(ActivePieceData.Pos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.CollisionMatrix):
+		Matrix.CopyMatrix(ActivePieceData.ShapeMatrix, ActivePieceData.CollisionMatrix)		
+		ActivePieceData.RotationState -= 1
 	
+		if ActivePieceData.RotationState == -1:
+			ActivePieceData.RotationState = 3
+
+		update()
