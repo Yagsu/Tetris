@@ -123,8 +123,8 @@ func Grid_MoveRowsDown(StartRow: int):
 			GridMatrix[x][y] = GridMatrix[x][y - 1]
 
 func Grid_CheckForFilledRows(AddedShapePos: Vector2, AddedShapeHeight: int) -> void:
-	var ScanStartPos: Vector2 = Vector2(0, min(GRID_HEIGHT, AddedShapePos.y + AddedShapeHeight))
-	var Cleared: int = 0
+	var ScanStartPos:	Vector2	= Vector2(0, min(GRID_HEIGHT, AddedShapePos.y + AddedShapeHeight))
+	var Cleared:		int		= 0
 
 	for y in range(2, ScanStartPos.y):
 		var ShouldClear:		bool = true
