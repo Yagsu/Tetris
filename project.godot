@@ -11,10 +11,11 @@ config_version=4
 [application]
 
 config/name="ChillchatTetris"
-run/main_scene="res://Scenes/Game.tscn"
+run/main_scene="res://Scenes/Game/Game.tscn"
 
 [autoload]
 
+Constants="*res://Constants.gd"
 Matrix="*res://Utils/MatrixUtils.gd"
 Grid="*res://Grid/Grid.gd"
 
@@ -51,6 +52,11 @@ DEBUG_MOVE_LEFT={
 DEBUG_MOVE_RIGHT={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777233,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+DEBUG_ADD_SHAPE={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
 

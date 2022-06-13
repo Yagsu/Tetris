@@ -2,11 +2,13 @@ extends Node
 
 const TempMatrixWidth:  int	= 4
 const TempMatrixHeight: int	= 4
-var Temp4x4Matrix:	Array	= [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
+var Temp4x4Matrix:	Array	= [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 
 
 func CreateMatrix(Width: int, Height: int, Value: int = 0) -> Array:
 	var NewMatrix: Array = []
+
+	assert(Width > 0 and Height > 0)
 
 	for x in range(Width):
 		NewMatrix.append([])
@@ -41,6 +43,8 @@ func TransposeMatrix(Matrix: Array, Width: int, Height: int) -> Array:
 	Width	= min(Matrix.size(), Width)
 	Height	= min(Matrix[0].size(), Height)
 	
+	assert(Width > 0 and Height > 0)
+
 	if Width <= TempMatrixWidth and Height <= TempMatrixHeight:
 		return _TransposeCopy(Matrix, Width, Height)
 
@@ -68,6 +72,8 @@ func ReverseRows(Matrix: Array, Width: int, Height: int) -> Array:
 	Width	= min(Matrix.size(), Width)
 	Height	= min(Matrix[0].size(), Height)
 	
+	assert(Width > 0 and Height > 0)
+
 	if Width <= TempMatrixWidth and Height <= TempMatrixHeight:
 		return _ReverseRowsCopy(Matrix, Width, Height)
 		
@@ -94,6 +100,8 @@ func _ReverseRowsNew(Matrix: Array, Width: int, Height: int) -> Array:
 func ReverseCols(Matrix: Array, Width: int, Height: int) -> Array:
 	Width	= min(Matrix.size(), Width)
 	Height	= min(Matrix[0].size(), Height)
+
+	assert(Width > 0 and Height > 0)
 
 	if Width <= TempMatrixWidth and Height <= TempMatrixHeight:
 		return _ReverseColsCopy(Matrix, Width, Height)

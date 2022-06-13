@@ -1,10 +1,10 @@
 extends Node2D
 	
 
-func _ready():
+func _ready()	-> void:
 	pass
 
-func _draw() -> void:
+func _draw()	-> void:
 	GridRenderer_Draw()
 
 
@@ -13,15 +13,19 @@ func GridRenderer_Draw() -> void:
 		return
 
 	for x in range(Grid.GRID_WIDTH):
-		for y in range(2, Grid.GRID_HEIGHT):
-			var GridPos: Vector2 = Vector2(x, y)
-			var GridValue = Grid.Grid_GetValueAt(GridPos)
+		for y in range(3, Grid.GRID_HEIGHT):
+			var GridPos:	Vector2	= Vector2(x, y)
+			var GridValue: 	int		= Grid.Grid_GetValueAt(GridPos)
 			
-			var Pos = GridRenderer_ToScreen(GridPos)
-			var Col = Constants.COLORS[GridValue]
-			var GridRect = Rect2(Pos, Grid.GRID_CELLSIZE)
+			var Position =	GridRenderer_ToScreen(GridPos)
+			var Col =		Constants.COLORS[GridValue]
+			var GridRect =	Rect2(Position, Grid.GRID_CELLSIZE)
 
 			draw_rect(GridRect, Col)
+		
+	var TestPos = GridRenderer_ToScreen(Grid.DebugDrawPos)
+	var TestRect =	Rect2(TestPos, Grid.GRID_CELLSIZE)
+	draw_rect(TestRect, Color(1, 1, 1, 0.5))
 
 
 func GridRenderer_ToScreen(Pos: Vector2) -> Vector2:
