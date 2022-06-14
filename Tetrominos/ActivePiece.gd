@@ -1,6 +1,8 @@
 extends Node2D
 
 signal ShouldLockPiece
+signal ShouldEndGame
+signal PieceHardDrop(CellCount)
 
 var CollisionResult = Grid.CollisionResult
 var ActivePieceData = {
@@ -74,23 +76,30 @@ func ActivePiece_Draw()					-> void:
 					var DrawColor	= Constants.COLORS[ActivePieceData.Type]
 					var Rectangle	= Rect2(DrawPos, Grid.GRID_CELLSIZE)
 					
-					DrawColor.a = 0.35
+					DrawColor.a = 0.2
 
 					draw_rect(Rectangle, DrawColor)
 
 
 
 func ActivePiece_SetActivePiece(Piece)	-> void:
-	ActivePieceData.Pos = Vector2(0, 0)
-
-	ActivePieceData.RotationState = 0
-	ActivePieceData.Type = Piece.PieceType
+	var Coll: int
+	
+	ActivePieceData.Pos = Piece.SpawnPos
+	ActivePieceData.RotationState	= 0
+	ActivePieceData.Type			= Piece.PieceType
 	ActivePieceData.WallkickDataCW	= Piece.WallkickDataCW
 	ActivePieceData.WallkickDataCCW	= Piece.WallkickDataCCW
 	ActivePieceData.ShapeMatrixWidth  =	Piece.ShapeMatrixWidth
 	ActivePieceData.ShapeMatrixHeight = Piece.ShapeMatrixHeight
 	Matrix.CopyMatrix(ActivePieceData.ShapeMatrix, Piece.ShapeMatrix)
-	
+
+	Coll = Grid.Grid_HasCollisionWithShape(ActivePieceData.Pos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix)
+
+	if Coll == CollisionResult.FLOOR:
+		emit_signal("ShouldEndGame")
+		return 
+
 	ActivePiece_UpdateGhostPos()
 	update()
 
@@ -124,12 +133,21 @@ func ActivePiece_MoveDown()		-> void:
 		return
 
 	if Coll == CollisionResult.FLOOR:
-		emit_signal("ShouldLockPiece")
+		if Grid.Grid_IsShapeInsidePlayArea(ActivePieceData.Pos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix):
+			emit_signal("ShouldLockPiece")
+		else:
+			emit_signal("ShouldEndGame")
 
 func ActivePiece_HardDrop()		-> void:
 	var HardDropPos: Vector2	= ActivePiece_GetHardDropPosition()
+	var CellCount:	 int		= ActivePieceData.Pos.distance_to(HardDropPos)	
+
+	if not Grid.Grid_IsShapeInsidePlayArea(HardDropPos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix):
+		emit_signal("ShouldEndGame")
+		return
 
 	ActivePieceData.Pos.y = HardDropPos.y
+	emit_signal("PieceHardDrop", CellCount)
 	emit_signal("ShouldLockPiece")
 
 func ActivePiece_MoveLeft()		-> void:

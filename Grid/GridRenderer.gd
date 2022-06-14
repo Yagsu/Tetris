@@ -22,11 +22,6 @@ func GridRenderer_Draw() -> void:
 			var GridRect =	Rect2(Position, Grid.GRID_CELLSIZE)
 
 			draw_rect(GridRect, Col)
-		
-	var TestPos = GridRenderer_ToScreen(Grid.DebugDrawPos)
-	var TestRect =	Rect2(TestPos, Grid.GRID_CELLSIZE)
-	draw_rect(TestRect, Color(1, 1, 1, 0.5))
-
 
 func GridRenderer_ToScreen(Pos: Vector2) -> Vector2:
 	return Pos * Grid.GRID_CELLSIZE

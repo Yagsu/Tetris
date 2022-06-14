@@ -14,9 +14,6 @@ var Initialized: 		bool = false
 signal RowsCleared(Count)
 
 
-var DebugDrawPos = Vector2(0, 3)
-
-
 func _ready():
 	Grid_Initialize()
 
@@ -92,9 +89,25 @@ func Grid_AddShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array
 	
 	Grid_CheckForFilledRows(Pos, ShapeHeight)
 
+func Grid_IsShapeInsidePlayArea(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array)	-> bool:
+	var Width: 		   int	= min(ShapeWidth, Shape.size())
+	var Height:		   int	= min(ShapeHeight, Shape[0].size())
+
+	assert(Width > 0 and Height > 0)
+
+	for x in range(Width):
+		for y in range(Height):
+			if Shape[x][y] != 0:
+				var GridPos: Vector2 = Vector2(Pos.x + x, Pos.y + y)
+
+				if Grid_IsInsidePlayArea(GridPos):
+					return true
+
+	return false
+
 func Grid_HasCollisionWithShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array)	-> int:
-	var Width:  int	= min(ShapeWidth, Shape.size())
-	var Height: int = min(ShapeHeight, Shape[0].size())
+	var Width: 		   int	= min(ShapeWidth, Shape.size())
+	var Height:		   int	= min(ShapeHeight, Shape[0].size())
 
 	assert(Width > 0 and Height > 0)
 
@@ -127,7 +140,7 @@ func Grid_CheckForFilledRows(AddedShapePos: Vector2, AddedShapeHeight: int) -> v
 	var Cleared:		int		= 0
 
 	for y in range(2, ScanStartPos.y):
-		var ShouldClear:		bool = true
+		var ShouldClear: bool	= true
 
 		for x in range(GRID_WIDTH):
 			var GridValue: int = GridMatrix[x][y]
@@ -136,13 +149,10 @@ func Grid_CheckForFilledRows(AddedShapePos: Vector2, AddedShapeHeight: int) -> v
 				ShouldClear = false
 				break
 		
-		if ShouldClear:
+		if ShouldClear == true:
 			Grid_ClearRow(y)
 			Grid_MoveRowsDown(y)
 			Cleared += 1
 
-
 	if Cleared > 0:
 		emit_signal("RowsCleared", Cleared)
-		
-	DebugDrawPos = ScanStartPos
