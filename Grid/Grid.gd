@@ -3,8 +3,9 @@ extends Node2D
 const GRID_WIDTH: 		 int = 10
 const GRID_HEIGHT:		 int = 23
 const GRID_MATRIXSIZE:	 int = GRID_WIDTH * GRID_HEIGHT
-const GRID_CELLSIZE		 := Vector2(48, 48)
-const GRID_HALFCELLSIZE	 := GRID_CELLSIZE * 0.5
+const GRID_CELLSIZE			:= Vector2(48, 48)
+const GRID_HALFCELLSIZE	 	:= GRID_CELLSIZE * 0.5
+const GRID_VANISHZONEOFFSET := Vector2(0, 3 * GRID_CELLSIZE.y)
 
 enum CollisionResult {NONE, WALL, FLOOR}
 
@@ -12,6 +13,7 @@ var GridMatrix:			Array
 var Initialized: 		bool = false
 
 signal RowsCleared(Count)
+signal GridUpdate
 
 
 func _ready():
@@ -88,6 +90,7 @@ func Grid_AddShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array
 				Grid_SetValueAt(Pos + Vector2(x, y), ShapeValue)
 	
 	Grid_CheckForFilledRows(Pos, ShapeHeight)
+	emit_signal("GridUpdate")
 
 func Grid_IsShapeInsidePlayArea(Pos: Vector2, ShapeWidth: int, ShapeHeight: int, Shape: Array)	-> bool:
 	var Width: 		   int	= min(ShapeWidth, Shape.size())
@@ -156,3 +159,4 @@ func Grid_CheckForFilledRows(AddedShapePos: Vector2, AddedShapeHeight: int) -> v
 
 	if Cleared > 0:
 		emit_signal("RowsCleared", Cleared)
+		emit_signal("GridUpdate")

@@ -1,9 +1,12 @@
 extends Node2D
 
+const BLOCK_SPRITE = preload("res://Assets/Images/RetmisBlockSprite.png")
+const GHOST_SPRITE = preload("res://Assets/Images/RetmisGhostBlockSprite.png")
+
 const COLORS = [
-				Color(0, 0, 0, 1),
+				Color(1, 1, 1, 1),
 				Color(0.3, 0.5, 0.8, 1),
-				Color(0.1, 0.13, 0.6, 1),
+				Color(0.2, 0.3, 0.6, 1),
 				Color(1, 0.5, 0.275, 1),
 				Color(1, 0.8, 0.05, 1),
 				Color(0.6, 1.0, 0.6, 1),
@@ -39,4 +42,4 @@ const I_WALLKICK_CCW = [
 	[Vector2(-2, 0), Vector2(1, 0), Vector2(-2, 1), Vector2(1, -2)],
 ]
 
-enum PieceTypes {I, J, L, O, S, T, Z}
+const MAX_SCORE = 1000

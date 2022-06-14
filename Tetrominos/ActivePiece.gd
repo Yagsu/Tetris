@@ -3,7 +3,14 @@ extends Node2D
 signal ShouldLockPiece
 signal ShouldEndGame
 signal PieceHardDrop(CellCount)
+signal PieceSoftDrop
 
+onready var DropTimer = $DropTimer
+
+var		PieceSprites: Array	= []
+var		GhostSprites: Array	= []
+
+var	SoftDropActive	= false
 var CollisionResult = Grid.CollisionResult
 var ActivePieceData = {
 	Type				= -1,
@@ -20,65 +27,91 @@ var ActivePieceData = {
 
 
 func _ready():
-	pass
+	for i in range(4 * 4):
+		var PieceSprite = Sprite.new()
+		var GhostSprite = Sprite.new()
+
+		PieceSprite.texture	= Constants.BLOCK_SPRITE
+		PieceSprite.visible	= false
+
+		GhostSprite.texture = Constants.GHOST_SPRITE
+		GhostSprite.visible = false
+
+		PieceSprites.append(PieceSprite)
+		GhostSprites.append(GhostSprite)
+
+		add_child(PieceSprite)
+		add_child(GhostSprite)
 
 func _draw():
 	ActivePiece_Draw()
 
 func _process(Delta: float) -> void:
-	if Input.is_action_just_pressed("DEBUG_TURN_CW"):
+	if Input.is_action_just_pressed("TETRIS_TURN_CW"):
 		ActivePiece_RotateCW()
 		
-	if Input.is_action_just_pressed("DEBUG_TURN_CCW"):
+	if Input.is_action_just_pressed("TETRIS_TURN_CCW"):
 		ActivePiece_RotateCCW()
 		
-	if Input.is_action_just_pressed("DEBUG_MOVE_DOWN"):
-		ActivePiece_MoveDown()
+	if Input.is_action_just_pressed("TETRIS_SOFT_DROP"):
+		SoftDropActive = true
+		DropTimer.wait_time = DropTimer.wait_time * 0.2
+		DropTimer.start()
 
-	if Input.is_action_just_pressed("DEBUG_MOVE_LEFT"):
+	if Input.is_action_just_released("TETRIS_SOFT_DROP"):
+		SoftDropActive = false
+		DropTimer.wait_time = DropTimer.wait_time * 5
+		DropTimer.start()
+
+	if Input.is_action_just_pressed("TETRIS_MOVE_LEFT"):
 		ActivePiece_MoveLeft()
 	
-	if Input.is_action_just_pressed("DEBUG_MOVE_RIGHT"):
+	if Input.is_action_just_pressed("TETRIS_MOVE_RIGHT"):
 		ActivePiece_MoveRight()
 
-	if Input.is_action_just_pressed("DEBUG_HARD_DROP"):
+	if Input.is_action_just_pressed("TETRIS_HARD_DROP"):
 		ActivePiece_HardDrop()
 	
 
-
+func ActivePiece_HideSprites()			-> void:
+	for i in range(4 * 4):
+		PieceSprites[i].visible = false
+		GhostSprites[i].visible = false
 
 func ActivePiece_ToScreen(Pos: Vector2) -> Vector2:
-	return Pos * Grid.GRID_CELLSIZE
+	return Pos * Grid.GRID_CELLSIZE - Grid.GRID_VANISHZONEOFFSET
 
 func ActivePiece_Draw()					-> void:
 	var ShapeMatrix: Array	= ActivePieceData.ShapeMatrix
 	var GhostPos:	Vector2	= ActivePieceData.GhostPos
 	var Pos:		Vector2	= ActivePieceData.Pos
 
+	ActivePiece_HideSprites()
+
 	for x in range(ActivePieceData.ShapeMatrixWidth):
 		for y in range(ActivePieceData.ShapeMatrixHeight):
 			var ShouldDraw = ShapeMatrix[x][y] != 0
 
 			if ShouldDraw:
-				var ShapeOffset = Vector2(x, y)
-				var BlockDrawPos = Pos + ShapeOffset
-				var GhostDrawPos = GhostPos + ShapeOffset
+				var ShapeOffset		= Vector2(x, y)
+				var BlockDrawPos	= Pos + ShapeOffset
+				var GhostDrawPos	= GhostPos + ShapeOffset
 
 				if Grid.Grid_IsInsidePlayArea(BlockDrawPos):
-					var DrawPos		= ActivePiece_ToScreen(BlockDrawPos)
-					var DrawColor	= Constants.COLORS[ActivePieceData.Type]
-					var Rectangle	= Rect2(DrawPos, Grid.GRID_CELLSIZE)
+					var PieceSprite	= PieceSprites[y * 4 + x]
 
-					draw_rect(Rectangle, DrawColor)
+					PieceSprite.position		= ActivePiece_ToScreen(BlockDrawPos) + Grid.GRID_HALFCELLSIZE
+					PieceSprite.self_modulate	= Constants.COLORS[ActivePieceData.Type]
+					PieceSprite.visible			= true
 
 				if Grid.Grid_IsInsidePlayArea(GhostDrawPos):
-					var DrawPos		= ActivePiece_ToScreen(GhostDrawPos)
-					var DrawColor	= Constants.COLORS[ActivePieceData.Type]
-					var Rectangle	= Rect2(DrawPos, Grid.GRID_CELLSIZE)
-					
-					DrawColor.a = 0.2
+					var GhostSprite	= GhostSprites[y * 4 + x]
 
-					draw_rect(Rectangle, DrawColor)
+					GhostSprite.position		= ActivePiece_ToScreen(GhostDrawPos) + Grid.GRID_HALFCELLSIZE
+					GhostSprite.self_modulate	= Constants.COLORS[ActivePieceData.Type]
+					GhostSprite.self_modulate.a = 0.4
+					GhostSprite.visible			= true
+
 
 
 
@@ -128,12 +161,15 @@ func ActivePiece_MoveDown()		-> void:
 	var Coll:	int				= Grid.Grid_HasCollisionWithShape(NewPos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix)
 
 	if Coll == CollisionResult.NONE:
+		if SoftDropActive:
+			emit_signal("PieceSoftDrop")
+
 		ActivePieceData.Pos.y = NewPos.y
 		update()
 		return
 
 	if Coll == CollisionResult.FLOOR:
-		if Grid.Grid_IsShapeInsidePlayArea(ActivePieceData.Pos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix):
+		if Grid.Grid_IsShapeInsidePlayArea(ActivePieceData.Pos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix):	
 			emit_signal("ShouldLockPiece")
 		else:
 			emit_signal("ShouldEndGame")
@@ -239,3 +275,7 @@ func ActivePiece_RotateCCW()	-> void:
 
 		ActivePiece_UpdateGhostPos()
 		update()
+
+
+func _on_DropTimer_timeout():
+	ActivePiece_MoveDown()
