@@ -3,6 +3,9 @@ extends Node2D
 const BLOCK_SPRITE = preload("res://Assets/Images/RetmisBlockSprite.png")
 const GHOST_SPRITE = preload("res://Assets/Images/RetmisGhostBlockSprite.png")
 
+const USER_SETTINGS_FILE = "user://user_settings.txt"
+const HIGHSCORE_SAVEFILE = "user://highscores"
+
 const COLORS = [
 				Color(1, 1, 1, 1),
 				Color(0.3, 0.5, 0.8, 1),
@@ -42,4 +45,4 @@ const I_WALLKICK_CCW = [
 	[Vector2(-2, 0), Vector2(1, 0), Vector2(-2, 1), Vector2(1, -2)],
 ]
 
-const MAX_SCORE = 1000
+const MAX_SCORE = 2500

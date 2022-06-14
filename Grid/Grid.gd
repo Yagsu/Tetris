@@ -16,7 +16,7 @@ signal RowsCleared(Count)
 signal GridUpdate
 
 
-func _ready():
+func _ready()			-> void:
 	Grid_Initialize()
 
 
@@ -32,8 +32,9 @@ func Grid_Reset()		-> void:
 	if not Initialized:
 		return
 
-	for i in range(GRID_WIDTH * GRID_HEIGHT):
-			GridMatrix[i] = 0
+	for x in range(GRID_WIDTH):
+		for y in range(GRID_HEIGHT):
+			GridMatrix[x][y] = 0
 
 
 
@@ -129,11 +130,11 @@ func Grid_HasCollisionWithShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int,
 
 
 
-func Grid_ClearRow(Row: int):
+func Grid_ClearRow(Row: int)				-> void:
 	for x in range(GRID_WIDTH):
 		GridMatrix[x][Row] = 0
 
-func Grid_MoveRowsDown(StartRow: int):
+func Grid_MoveRowsDown(StartRow: int)		-> void:
 	for y in range(StartRow, 2, -1):
 		for x in range(GRID_WIDTH):
 			GridMatrix[x][y] = GridMatrix[x][y - 1]

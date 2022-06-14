@@ -1,0 +1,351 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/UI/MainMenu/SettingsMenu/SettingsMenu.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/UI/Themes/RetmisTheme.tres" type="Theme" id=2]
+[ext_resource path="res://Assets/Fonts/BasicBlockFont24.tres" type="DynamicFont" id=3]
+
+[node name="SettingsMenu" type="Popup"]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -720.0
+margin_top = -417.0
+margin_right = 720.0
+margin_bottom = 417.0
+theme = ExtResource( 2 )
+script = ExtResource( 1 )
+
+[node name="TabContainer" type="TabContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 2 )
+tab_align = 0
+use_hidden_tabs_for_min_size = true
+
+[node name="Controls" type="Tabs" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 26.0
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Controls"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 53.0
+margin_top = 45.0
+margin_right = -53.0
+margin_bottom = -45.0
+size_flags_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Controls/MarginContainer"]
+margin_right = 1334.0
+margin_bottom = 718.0
+
+[node name="GameplayLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer"]
+margin_right = 1334.0
+margin_bottom = 24.0
+custom_colors/font_color = Color( 0.545098, 0.545098, 0.545098, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "Gameplay"
+
+[node name="HSeparator" type="HSeparator" parent="TabContainer/Controls/MarginContainer/VBoxContainer"]
+margin_top = 28.0
+margin_right = 1334.0
+margin_bottom = 53.0
+rect_min_size = Vector2( 0, 25 )
+size_flags_vertical = 0
+
+[node name="KeysGrid" type="GridContainer" parent="TabContainer/Controls/MarginContainer/VBoxContainer"]
+margin_top = 57.0
+margin_right = 1334.0
+margin_bottom = 258.0
+columns = 2
+
+[node name="MoveRightLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_right = 665.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Move Right"
+valign = 1
+
+[node name="RightArrowLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_left = 669.0
+margin_right = 1334.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = ": Right Arrow"
+valign = 1
+
+[node name="MoveLeftLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_top = 37.0
+margin_right = 665.0
+margin_bottom = 53.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Move Left"
+valign = 1
+
+[node name="LeftArrowLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_left = 669.0
+margin_top = 37.0
+margin_right = 1334.0
+margin_bottom = 53.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = ": Left Arrow"
+valign = 1
+
+[node name="TurnCWLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_top = 74.0
+margin_right = 665.0
+margin_bottom = 90.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Turn Clockwise"
+valign = 1
+
+[node name="TurnCWKeysLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_left = 669.0
+margin_top = 74.0
+margin_right = 1334.0
+margin_bottom = 90.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = ": Up Arrow, X"
+valign = 1
+
+[node name="TurnCCWLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_top = 111.0
+margin_right = 665.0
+margin_bottom = 127.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Turn Counter Clockwise"
+valign = 1
+
+[node name="TurnCCWKeysLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_left = 669.0
+margin_top = 111.0
+margin_right = 1334.0
+margin_bottom = 127.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = ": Up Control, Z"
+valign = 1
+
+[node name="SoftDropLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_top = 148.0
+margin_right = 665.0
+margin_bottom = 164.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Soft Drop"
+valign = 1
+
+[node name="DownArrowLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_left = 669.0
+margin_top = 148.0
+margin_right = 1334.0
+margin_bottom = 164.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = ": Down Arrow"
+valign = 1
+
+[node name="HardDropLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_top = 185.0
+margin_right = 665.0
+margin_bottom = 201.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Hard Drop"
+valign = 1
+
+[node name="SpaceLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/KeysGrid"]
+margin_left = 669.0
+margin_top = 185.0
+margin_right = 1334.0
+margin_bottom = 201.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = ": Space"
+valign = 1
+
+[node name="MiscLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer"]
+margin_top = 262.0
+margin_right = 1334.0
+margin_bottom = 312.0
+rect_min_size = Vector2( 0, 50 )
+custom_colors/font_color = Color( 0.545098, 0.545098, 0.545098, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "Misc"
+valign = 2
+
+[node name="HSeparator2" type="HSeparator" parent="TabContainer/Controls/MarginContainer/VBoxContainer"]
+margin_top = 316.0
+margin_right = 1334.0
+margin_bottom = 341.0
+rect_min_size = Vector2( 0, 25 )
+size_flags_vertical = 0
+
+[node name="MiscGrid" type="GridContainer" parent="TabContainer/Controls/MarginContainer/VBoxContainer"]
+margin_top = 345.0
+margin_right = 1334.0
+margin_bottom = 361.0
+columns = 2
+
+[node name="PauseLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/MiscGrid"]
+margin_right = 665.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Pause Game"
+valign = 1
+
+[node name="EscLabel" type="Label" parent="TabContainer/Controls/MarginContainer/VBoxContainer/MiscGrid"]
+margin_left = 669.0
+margin_right = 1334.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = ": Escape"
+valign = 1
+
+[node name="Audio" type="Tabs" parent="TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 26.0
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Audio"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 53.0
+margin_top = 45.0
+margin_right = -53.0
+margin_bottom = -45.0
+size_flags_horizontal = 0
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Audio/MarginContainer"]
+margin_right = 1334.0
+margin_bottom = 718.0
+columns = 2
+
+[node name="MasterLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer"]
+margin_right = 665.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Master"
+valign = 1
+
+[node name="VolumeLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer/MasterLabel"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -18.0
+margin_top = -7.0
+margin_bottom = 7.0
+grow_horizontal = 0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "-10 dB"
+
+[node name="MasterSlider" type="HSlider" parent="TabContainer/Audio/MarginContainer/GridContainer"]
+margin_left = 669.0
+margin_right = 1334.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+min_value = -80.0
+max_value = 0.0
+value = -10.0
+
+[node name="MusicLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer"]
+margin_top = 37.0
+margin_right = 665.0
+margin_bottom = 53.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Music"
+valign = 1
+
+[node name="VolumeLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer/MusicLabel"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -18.0
+margin_top = -7.0
+margin_bottom = 7.0
+grow_horizontal = 0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "-10 dB"
+
+[node name="MusicSlider" type="HSlider" parent="TabContainer/Audio/MarginContainer/GridContainer"]
+margin_left = 669.0
+margin_top = 37.0
+margin_right = 1334.0
+margin_bottom = 53.0
+size_flags_horizontal = 3
+min_value = -80.0
+max_value = 0.0
+value = -10.0
+
+[node name="SoundEffectsLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer"]
+visible = false
+margin_top = 74.0
+margin_right = 665.0
+margin_bottom = 90.0
+rect_pivot_offset = Vector2( 811, -256 )
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "Sound Effects"
+valign = 1
+
+[node name="VolumeLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer/SoundEffectsLabel"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -18.0
+margin_top = -7.0
+margin_bottom = 7.0
+grow_horizontal = 0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "-10 dB"
+
+[node name="SoundEffectsSlider" type="HSlider" parent="TabContainer/Audio/MarginContainer/GridContainer"]
+visible = false
+margin_top = 74.0
+margin_right = 665.0
+margin_bottom = 90.0
+size_flags_horizontal = 3
+min_value = -80.0
+max_value = 0.0
+value = -10.0
+
+[connection signal="value_changed" from="TabContainer/Audio/MarginContainer/GridContainer/MasterSlider" to="." method="_on_MasterSlider_value_changed"]
+[connection signal="value_changed" from="TabContainer/Audio/MarginContainer/GridContainer/MusicSlider" to="." method="_on_Music_Slider_value_changed"]
+[connection signal="value_changed" from="TabContainer/Audio/MarginContainer/GridContainer/SoundEffectsSlider" to="." method="_on_SoundEffectsSlider_value_changed"]

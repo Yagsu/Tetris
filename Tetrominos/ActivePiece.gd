@@ -26,7 +26,7 @@ var ActivePieceData = {
 }
 
 
-func _ready():
+func _ready()				-> void:
 	for i in range(4 * 4):
 		var PieceSprite = Sprite.new()
 		var GhostSprite = Sprite.new()
@@ -43,7 +43,8 @@ func _ready():
 		add_child(PieceSprite)
 		add_child(GhostSprite)
 
-func _draw():
+func _draw()				-> void:
+	ActivePiece_UpdateGhostPos()
 	ActivePiece_Draw()
 
 func _process(Delta: float) -> void:
@@ -71,7 +72,10 @@ func _process(Delta: float) -> void:
 
 	if Input.is_action_just_pressed("TETRIS_HARD_DROP"):
 		ActivePiece_HardDrop()
-	
+
+
+func ActivePiece_Reset()				-> void:
+	ActivePiece_HideSprites()
 
 func ActivePiece_HideSprites()			-> void:
 	for i in range(4 * 4):
@@ -133,7 +137,6 @@ func ActivePiece_SetActivePiece(Piece)	-> void:
 		emit_signal("ShouldEndGame")
 		return 
 
-	ActivePiece_UpdateGhostPos()
 	update()
 
 func ActivePiece_UpdateGhostPos()		-> void:
@@ -155,8 +158,17 @@ func ActivePiece_GetHardDropPosition()	-> Vector2:
 	return NewPos
 
 
+func ActivePiece_ToggleSoftDrop()	-> void:
+	if SoftDropActive:
+		SoftDropActive = false
+		DropTimer.wait_time = DropTimer.wait_time * 5
+		DropTimer.start()
+	else:
+		SoftDropActive = true
+		DropTimer.wait_time = DropTimer.wait_time * 0.2
+		DropTimer.start()
 
-func ActivePiece_MoveDown()		-> void:
+func ActivePiece_MoveDown()			-> void:
 	var NewPos: Vector2			= Vector2(ActivePieceData.Pos.x, ActivePieceData.Pos.y + 1)
 	var Coll:	int				= Grid.Grid_HasCollisionWithShape(NewPos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix)
 
@@ -192,8 +204,6 @@ func ActivePiece_MoveLeft()		-> void:
 	
 	if Coll == CollisionResult.NONE:
 		ActivePieceData.Pos.x = NewPos.x
-
-		ActivePiece_UpdateGhostPos()
 		update()
 
 func ActivePiece_MoveRight()	-> void:
@@ -202,8 +212,6 @@ func ActivePiece_MoveRight()	-> void:
 	
 	if Coll == CollisionResult.NONE:
 		ActivePieceData.Pos.x = NewPos.x
-
-		ActivePiece_UpdateGhostPos()
 		update()
 
 func ActivePiece_RotateCW()		-> void:
@@ -238,7 +246,6 @@ func ActivePiece_RotateCW()		-> void:
 		if WallkickOffset != null:
 			ActivePieceData.Pos += WallkickOffset
 
-		ActivePiece_UpdateGhostPos()
 		update()
 
 func ActivePiece_RotateCCW()	-> void:
@@ -273,7 +280,6 @@ func ActivePiece_RotateCCW()	-> void:
 		if WallkickOffset != null:
 			ActivePieceData.Pos += WallkickOffset
 
-		ActivePiece_UpdateGhostPos()
 		update()
 
 

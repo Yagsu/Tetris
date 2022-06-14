@@ -1,58 +1,106 @@
-extends Node2D
+extends CanvasLayer
 
-onready var ActivePiece		= $Grid/GridRenderer/ActivePiece
-onready var ActivePieceData = ActivePiece.ActivePieceData
-onready var PieceRandomizer = $Pieces/PieceRandomizer
+onready var RetmisGrid		: Node2D			= $TextureRect/RetmisGrid
 
-onready var Pieces = [$Pieces/Piece_I, $Pieces/Piece_J, $Pieces/Piece_L, $Pieces/Piece_O, $Pieces/Piece_S, $Pieces/Piece_T, $Pieces/Piece_Z]
+onready var PauseMenu		: Popup 			= $Overlay/PauseMenu
+onready var PauseMusicTween : Tween 			= $PauseMusicTween
+onready var BlurEnvironment : Environment 		= $Overlay/Blur.environment
+onready var MusicPlayer		: AudioStreamPlayer	= $MusicPlayer
 
-var	PlayerScore: int	= 0
-var ScoreTable:	 Array	= [0, 100, 300, 500, 800]
+onready var ScoreText		: Label				= $LeftSideContainer/Score
+onready var ScoreTween		: Tween				= $LeftSideContainer/ScoreTween
 
-func _ready():
-	var	StartPiece: int	= PieceRandomizer.PieceRandomizer_GetNextPiece()
+onready var PopupTween		: Tween				= $OpenPopupTween
+onready var GameWinScene						= $Overlay/GameWin
+onready var GameLoseScene						= $Overlay/GameLose
 
-	ActivePiece.connect("ShouldLockPiece", self, "Game_OnShouldLockPiece")
-	ActivePiece.connect("ShouldEndGame", self, "Game_OnGameOver")
-	ActivePiece.connect("PieceHardDrop", self, "Game_OnPieceHardDrop")
-	ActivePiece.connect("PieceSoftDrop", self, "Game_OnPieceSoftDrop")
-	Grid.connect("RowsCleared", self, "Game_OnRowsCleared")
+var	PauseState:   bool = false
 
-	ActivePiece.ActivePiece_SetActivePiece(Pieces[StartPiece])
+func _ready()								-> void:
+	Game_Reset()
+
+	RetmisGrid.connect("ScoreChanged", self, "Game_OnScoreUpdated")
+	RetmisGrid.connect("GameFinished", self, "Game_OnGameFinished")	
+	
+	PauseMenu.connect("PauseToMenuButton", self, "Game_OnPauseToMenu")
+	PauseMenu.connect("PauseContinueButton", self, "Game_OnPauseContinueButton")
+	
+	GameWinScene.connect("WinToMenu", self, "Game_OnPauseToMenu")
+	GameWinScene.connect("WinNewGame", self, "Game_OnNewGame")
+	
+	GameLoseScene.connect("LoseToMenu", self, "Game_OnPauseToMenu")
+	GameLoseScene.connect("LoseNewGame", self, "Game_OnNewGame")
+	
+
+func _process(Delta)						-> void:
+	if Input.is_action_just_pressed("ui_cancel"):
+		if PlayerInfo.GameFinished:
+			Game_Unpause()
+			get_tree().change_scene("res://Scenes/UI/MainMenu/MainMenu.tscn")
+			return
+
+		if PauseState:
+			PauseMenu.hide()
+			Game_Unpause()
+		else:
+			PauseMenu.popup_centered()
+			Game_Pause()
 
 
-#menu
+func Game_Reset()							-> void:
+	Grid.Grid_Reset()
+	RetmisGrid.Retmis_Reset()
+	Game_OnScoreUpdated()
 
-func Game_IncreaseScore(Amount):
-	assert(not Amount < 0)
+func Game_Pause()							-> void:
+	PauseState = true
+	get_tree().paused = true
 
-	PlayerScore += Amount
+	PauseMusicTween.stop_all()
+	PauseMusicTween.BeginTween(MusicPlayer, MusicPlayer.volume_db, -20)
+	BlurEnvironment.dof_blur_near_enabled = true
 
-	if PlayerScore >= Constants.MAX_SCORE:
-		#Player wins
-		print("Player wins!")
-		get_tree().quit()
+func Game_Unpause()							-> void:
+	PauseState = false
+	get_tree().paused = false
+	
+	PauseMusicTween.stop_all()
+	PauseMusicTween.BeginTween(MusicPlayer, MusicPlayer.volume_db, -5)
+	BlurEnvironment.dof_blur_near_enabled = false
+	
+	RetmisGrid.Retmis_ResetDropTimer()
 
 
-func Game_OnShouldLockPiece():
-	var	NewPiece:	int
+func Game_OnScoreUpdated()					-> void:
+	ScoreText.set_text("%d" % PlayerInfo.CurrentScore)
+	ScoreTween.BeginTween(ScoreText)
+	
+func Game_OnGameFinished(PlayerWon: bool)	-> void:
+	var PreviousHighscore = ScoreManager.ScoreManager_GetScoreForUser(PlayerInfo.PlayerName)
+	var GameEndScene = GameWinScene if PlayerWon else GameLoseScene
+	
+	ScoreManager.ScoreManager_AddNewScore(PlayerInfo.PlayerName, PlayerInfo.CurrentScore)
 
-	Grid.Grid_AddShape(ActivePieceData.Pos, ActivePieceData.ShapeMatrixWidth, ActivePieceData.ShapeMatrixHeight, ActivePieceData.ShapeMatrix)
+	if PlayerInfo.CurrentScore > PreviousHighscore:
+		GameEndScene.HighScoreLabel.visible = true
+	else:
+		GameEndScene.HighScoreLabel.visible = false
 
-	NewPiece = PieceRandomizer.PieceRandomizer_GetNextPiece()
-	ActivePiece.ActivePiece_SetActivePiece(Pieces[NewPiece])
-	ActivePiece.ActivePiece_HideSprites()
+	GameEndScene.EndScoreLabel.text = "You scored: %d!" % PlayerInfo.CurrentScore
 
-func Game_OnPieceHardDrop(CellCount):
-	Game_IncreaseScore(CellCount * 2)
+	Game_Pause()
+	PopupTween.BeginTween(GameEndScene)
 
-func Game_OnPieceSoftDrop():
-	Game_IncreaseScore(1)
+func Game_OnPauseContinueButton()				-> void:
+	PauseMenu.hide()
+	Game_Unpause()
 
-func Game_OnRowsCleared(Count):
-	Game_IncreaseScore(ScoreTable[Count])
+func Game_OnPauseToMenu()						-> void:
+	Game_Unpause()
+	get_tree().change_scene("res://Scenes/UI/MainMenu/MainMenu.tscn")
 
-func Game_OnGameOver():
-	print("Final score [%d]" % PlayerScore)
+func Game_OnNewGame()							-> void:
+	GameWinScene.hide()
 
-	get_tree().quit()
+	Game_Reset()
+	Game_Unpause()

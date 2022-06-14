@@ -2,7 +2,7 @@ extends Node2D
 
 var		CellSprites: Array	= []
 
-func _ready()	-> void:
+func _ready()				-> void:
 	Grid.connect("GridUpdate", self, "update")
 
 	for i in range(Grid.GRID_WIDTH * Grid.GRID_HEIGHT):
@@ -20,7 +20,7 @@ func _draw()	-> void:
 	GridRenderer_Draw()
 
 
-func GridRenderer_Draw() -> void:
+func GridRenderer_Draw()	-> void:
 	assert(Grid.Grid_IsInitialized())
 
 	for x in range(Grid.GRID_WIDTH):
@@ -34,6 +34,9 @@ func GridRenderer_Draw() -> void:
 				CellSprite.self_modulate = Constants.COLORS[GridValue]
 			else:
 				CellSprite.visible	= false	
+
+func GridRenderer_Reset()	-> void:
+	update()
 
 func GridRenderer_ToScreen(Pos: Vector2) -> Vector2:
 	return Pos * Grid.GRID_CELLSIZE - Grid.GRID_VANISHZONEOFFSET

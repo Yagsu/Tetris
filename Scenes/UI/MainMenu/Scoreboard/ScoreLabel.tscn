@@ -1,0 +1,8 @@
+[gd_scene format=2]
+
+[node name="ScoreLabel" type="Label"]
+margin_right = 48.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 0, 40 )
+text = "N/A"
+valign = 1
