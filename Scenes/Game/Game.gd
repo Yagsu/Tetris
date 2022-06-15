@@ -40,6 +40,8 @@ func _ready()								-> void:
 	
 	GameLoseScene.connect("LoseToMenu", self, "Game_OnPauseToMenu")
 	GameLoseScene.connect("LoseNewGame", self, "Game_OnNewGame")
+	
+	NextPieceSprite.frame = RetmisGrid.PieceRandomizer.PieceRandomizer_PeekNextPiece()
 
 
 func _process(Delta)						-> void:
