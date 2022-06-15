@@ -1,11 +1,13 @@
 extends CanvasLayer
 
-onready var RetmisGrid		: Node2D			= $TextureRect/RetmisGrid
+onready var RetmisGrid		: Node2D			= $GameGridBackground/RetmisGrid
 
 onready var PauseMenu		: Popup 			= $Overlay/PauseMenu
 onready var PauseMusicTween : Tween 			= $PauseMusicTween
 onready var BlurEnvironment : Environment 		= $Overlay/Blur.environment
 onready var MusicPlayer		: AudioStreamPlayer	= $MusicPlayer
+onready var NextPieceSprite	: AnimatedSprite	= $RightSideContainer/NextPiece
+onready var NextPieceRollTimer					= $RightSideContainer/NextPieceRollTimer
 
 onready var ScoreText		: Label				= $LeftSideContainer/Score
 onready var ScoreTween		: Tween				= $LeftSideContainer/ScoreTween
@@ -14,13 +16,21 @@ onready var PopupTween		: Tween				= $OpenPopupTween
 onready var GameWinScene						= $Overlay/GameWin
 onready var GameLoseScene						= $Overlay/GameLose
 
-var	PauseState:   bool = false
+var RNG					= RandomNumberGenerator.new()
+var	PauseState:	bool	= false
+var NextPiece:	int		= 0
+
+var LastSpriteUpdate = 0
+var SpriteRollInterval = 0.05
 
 func _ready()								-> void:
 	Game_Reset()
 
 	RetmisGrid.connect("ScoreChanged", self, "Game_OnScoreUpdated")
-	RetmisGrid.connect("GameFinished", self, "Game_OnGameFinished")	
+	RetmisGrid.connect("GameFinished", self, "Game_OnGameFinished")
+	RetmisGrid.connect("QueueNextPiece", self, "Game_OnQueueNextPiece")	
+	
+	NextPieceRollTimer.connect("timeout", self, "Game_OnRollTimerTimeout")
 	
 	PauseMenu.connect("PauseToMenuButton", self, "Game_OnPauseToMenu")
 	PauseMenu.connect("PauseContinueButton", self, "Game_OnPauseContinueButton")
@@ -30,7 +40,7 @@ func _ready()								-> void:
 	
 	GameLoseScene.connect("LoseToMenu", self, "Game_OnPauseToMenu")
 	GameLoseScene.connect("LoseNewGame", self, "Game_OnNewGame")
-	
+
 
 func _process(Delta)						-> void:
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -45,6 +55,14 @@ func _process(Delta)						-> void:
 		else:
 			PauseMenu.popup_centered()
 			Game_Pause()
+	
+	if NextPieceRollTimer.time_left > 0 and LastSpriteUpdate > SpriteRollInterval:
+		var RandomFrame = RNG.randi_range(0, 6)
+		
+		NextPieceSprite.frame = RandomFrame
+		LastSpriteUpdate = 0
+	else:
+		LastSpriteUpdate += Delta
 
 
 func Game_Reset()							-> void:
@@ -92,6 +110,13 @@ func Game_OnGameFinished(PlayerWon: bool)	-> void:
 	Game_Pause()
 	PopupTween.BeginTween(GameEndScene)
 
+func Game_OnQueueNextPiece(Piece: int)	-> void:
+	NextPiece = Piece
+	NextPieceRollTimer.start()
+
+func Game_OnRollTimerTimeout()			-> void:
+	NextPieceSprite.frame = NextPiece
+
 func Game_OnPauseContinueButton()				-> void:
 	PauseMenu.hide()
 	Game_Unpause()
@@ -102,6 +127,7 @@ func Game_OnPauseToMenu()						-> void:
 
 func Game_OnNewGame()							-> void:
 	GameWinScene.hide()
+	GameLoseScene.hide()
 
 	Game_Reset()
 	Game_Unpause()

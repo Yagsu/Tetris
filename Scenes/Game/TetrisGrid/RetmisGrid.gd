@@ -2,6 +2,7 @@ extends Node2D
 
 signal	ScoreChanged(CurrentScore)
 signal	GameFinished(PlayerWon)
+signal	QueueNextPiece(NextPiece)
 
 onready var ActivePiece		= $Grid/GridRenderer/ActivePiece
 onready var ActivePieceData = ActivePiece.ActivePieceData
@@ -59,6 +60,7 @@ func Retmis_OnShouldLockPiece()				-> void:
 	NewPiece = PieceRandomizer.PieceRandomizer_GetNextPiece()
 	ActivePiece.ActivePiece_SetActivePiece(Pieces[NewPiece])
 	ActivePiece.ActivePiece_HideSprites()
+	emit_signal("QueueNextPiece", PieceRandomizer.PieceRandomizer_PeekNextPiece())
 
 func Retmis_OnPieceHardDrop(CellCount)		-> void:
 	Retmis_IncreaseScore(CellCount * 2)
