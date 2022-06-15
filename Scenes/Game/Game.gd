@@ -52,6 +52,7 @@ func Game_Reset()							-> void:
 	RetmisGrid.Retmis_Reset()
 	Game_OnScoreUpdated()
 
+
 func Game_Pause()							-> void:
 	PauseState = true
 	get_tree().paused = true

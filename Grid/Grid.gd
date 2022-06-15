@@ -13,6 +13,7 @@ var GridMatrix:			Array
 var Initialized: 		bool = false
 
 signal RowsCleared(Count)
+signal SpawnBlockClearParticle(Pos, Col)
 signal GridUpdate
 
 
@@ -132,6 +133,7 @@ func Grid_HasCollisionWithShape(Pos: Vector2, ShapeWidth: int, ShapeHeight: int,
 
 func Grid_ClearRow(Row: int)				-> void:
 	for x in range(GRID_WIDTH):
+		emit_signal("SpawnBlockClearParticle", Vector2(x, Row), GridMatrix[x][Row])
 		GridMatrix[x][Row] = 0
 
 func Grid_MoveRowsDown(StartRow: int)		-> void:

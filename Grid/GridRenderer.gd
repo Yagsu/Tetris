@@ -1,9 +1,11 @@
 extends Node2D
 
 var		CellSprites: Array	= []
+var		BlockClearParticle = preload("res://Scenes/UI/Particles/BlockClearParticle.tscn")
 
-func _ready()				-> void:
+func _ready()					-> void:
 	Grid.connect("GridUpdate", self, "update")
+	Grid.connect("SpawnBlockClearParticle", self, "GridRenderer_OnSpawnClearParticle")
 
 	for i in range(Grid.GRID_WIDTH * Grid.GRID_HEIGHT):
 		var SpritePos = Vector2((i % Grid.GRID_WIDTH), floor(i / (Grid.GRID_WIDTH)))
@@ -16,11 +18,14 @@ func _ready()				-> void:
 		CellSprites.append(CellSprite)
 		add_child(CellSprite)
 
-func _draw()	-> void:
+func _draw()					-> void:
 	GridRenderer_Draw()
 
 
-func GridRenderer_Draw()	-> void:
+func GridRenderer_Reset()		-> void:
+	update()
+
+func GridRenderer_Draw()		-> void:
 	assert(Grid.Grid_IsInitialized())
 
 	for x in range(Grid.GRID_WIDTH):
@@ -30,13 +35,22 @@ func GridRenderer_Draw()	-> void:
 			var CellSprite:	Sprite	= CellSprites[y * Grid.GRID_WIDTH + x]
 			
 			if GridValue != 0:
-				CellSprite.visible	= true
 				CellSprite.self_modulate = Constants.COLORS[GridValue]
+				CellSprite.visible = true
 			else:
-				CellSprite.visible	= false	
-
-func GridRenderer_Reset()	-> void:
-	update()
+				CellSprite.visible = false
 
 func GridRenderer_ToScreen(Pos: Vector2) -> Vector2:
 	return Pos * Grid.GRID_CELLSIZE - Grid.GRID_VANISHZONEOFFSET
+
+
+func GridRenderer_OnSpawnClearParticle(Position: Vector2, Col: int)	-> void:
+	var ParticleScreenPos:	Vector2		= GridRenderer_ToScreen(Position) + Grid.GRID_HALFCELLSIZE
+	var ParticleColor:		Color		= Constants.COLORS[Col]
+	var Particle						= BlockClearParticle.instance()
+
+	Particle.position		= ParticleScreenPos
+	Particle.self_modulate	= ParticleColor
+	Particle.emitting		= true
+
+	add_child(Particle)
