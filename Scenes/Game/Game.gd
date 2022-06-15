@@ -93,7 +93,7 @@ func Game_Unpause()							-> void:
 func Game_OnScoreUpdated()					-> void:
 	ScoreText.set_text("%d" % PlayerInfo.CurrentScore)
 	ScoreTween.BeginTween(ScoreText)
-	
+
 func Game_OnGameFinished(PlayerWon: bool)	-> void:
 	var PreviousHighscore = ScoreManager.ScoreManager_GetScoreForUser(PlayerInfo.PlayerName)
 	var GameEndScene = GameWinScene if PlayerWon else GameLoseScene

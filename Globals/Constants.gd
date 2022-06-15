@@ -45,4 +45,4 @@ const I_WALLKICK_CCW = [
 	[Vector2(-2, 0), Vector2(1, 0), Vector2(-2, 1), Vector2(1, -2)],
 ]
 
-const MAX_SCORE = 2500
+const MAX_SCORE = 500

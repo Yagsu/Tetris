@@ -312,40 +312,5 @@ min_value = -80.0
 max_value = 0.0
 value = -10.0
 
-[node name="SoundEffectsLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer"]
-visible = false
-margin_top = 74.0
-margin_right = 665.0
-margin_bottom = 90.0
-rect_pivot_offset = Vector2( 811, -256 )
-size_flags_horizontal = 3
-size_flags_vertical = 5
-text = "Sound Effects"
-valign = 1
-
-[node name="VolumeLabel" type="Label" parent="TabContainer/Audio/MarginContainer/GridContainer/SoundEffectsLabel"]
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-margin_left = -18.0
-margin_top = -7.0
-margin_bottom = 7.0
-grow_horizontal = 0
-size_flags_horizontal = 3
-size_flags_vertical = 5
-text = "-10 dB"
-
-[node name="SoundEffectsSlider" type="HSlider" parent="TabContainer/Audio/MarginContainer/GridContainer"]
-visible = false
-margin_top = 74.0
-margin_right = 665.0
-margin_bottom = 90.0
-size_flags_horizontal = 3
-min_value = -80.0
-max_value = 0.0
-value = -10.0
-
 [connection signal="value_changed" from="TabContainer/Audio/MarginContainer/GridContainer/MasterSlider" to="." method="_on_MasterSlider_value_changed"]
 [connection signal="value_changed" from="TabContainer/Audio/MarginContainer/GridContainer/MusicSlider" to="." method="_on_Music_Slider_value_changed"]
-[connection signal="value_changed" from="TabContainer/Audio/MarginContainer/GridContainer/SoundEffectsSlider" to="." method="_on_SoundEffectsSlider_value_changed"]
